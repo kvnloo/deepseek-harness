@@ -1,0 +1,13 @@
+# Zer0 local overlay: expose Groq and Cerebras through dsh-llm-pi-ai.
+# Credentials are references only. Launch through scripts/z0-dsh-bws-free-tier.sh
+# so the actual values are injected by Bitwarden Secrets Manager at process start.
+#
+# Do not add a models: list here. Both are pi-ai built-in providers, so keeping
+# the catalog intact lets DSH pick up current tool-capable models as pi-ai updates.
+- id: llm-pi-ai
+  config:
+    providers:
+      groq:
+        apiKeyEnv: GROQ_API_KEY
+      cerebras:
+        apiKeyEnv: CEREBRAS_API_KEY
