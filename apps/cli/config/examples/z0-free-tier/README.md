@@ -14,7 +14,7 @@ The project id is supplied as `BWS_DSH_PROJECT_ID`. The BWS machine-account toke
 Launch from the repository root:
 
 ```sh
-scripts/z0-dsh-bws-free-tier.sh
+bash scripts/z0-dsh-bws-free-tier.sh
 ```
 
 The wrapper uses `bws run --project-id`, verifies both injected variables are non-empty without printing them, and starts DSH with `cordis.patch.yml`.
