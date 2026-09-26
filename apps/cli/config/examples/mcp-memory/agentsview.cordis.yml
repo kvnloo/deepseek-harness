@@ -1,0 +1,13 @@
+# Local-first unified conversation recall through AgentsView.
+# DSH owns only the generic MCP client lifecycle; AgentsView owns indexing/storage.
+# The AgentsView CLI defaults to stdio MCP with `agentsview mcp` and will
+# attach to/start its local daemon as needed.
+- insert:
+    - id: memory-agentsview
+      name: '@deepseek-ai/dsh-mcp-client'
+      config:
+        serverName: agentsview
+        transport: stdio
+        command: agentsview
+        args: [mcp]
+        cwd: !!js process.cwd()
