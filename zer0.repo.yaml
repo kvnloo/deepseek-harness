@@ -1,0 +1,51 @@
+version: 1
+repo: kvnloo/deepseek-harness
+id: deepseek-harness
+kind: suite
+summary: Plugin-oriented agent harness built on Cordis with web/desktop applications, composable runtime packages, plugin surfaces, native integrations, and benchmark/test infrastructure.
+
+architecture:
+  subsystems:
+    - id: plugin-runtime
+      name: Plugin runtime
+      kind: execution
+      summary: Provides the everything-is-a-plugin runtime and composable package graph used to assemble agent behavior.
+      paths: [packages/, docs/architecture.md]
+    - id: applications
+      name: Harness applications
+      kind: presentation
+      summary: Hosts the Web and other application surfaces that compose runtime plugins into usable harness experiences.
+      paths: [apps/]
+      depends_on: [plugin-runtime]
+    - id: native-layer
+      name: Native integration layer
+      kind: integration
+      summary: Provides host/native capabilities required by application and runtime plugins.
+      paths: [native/]
+      depends_on: [plugin-runtime]
+    - id: python-interop
+      name: Python interoperability
+      kind: integration
+      summary: Provides Python-side runtime and tooling integration alongside the TypeScript workspace.
+      paths: [python/]
+      depends_on: [plugin-runtime]
+    - id: benchmark-eval
+      name: Benchmark and evaluation surface
+      kind: evidence
+      summary: Maintains benchmarks, snapshots, stress/performance suites, and expected-behavior tests independently from application presentation.
+      paths: [benchmarks/, snapshots/, vitest.config.ts, vitest.e2e.config.ts, vitest.web.perf.config.ts]
+      depends_on: [plugin-runtime]
+
+  provides_interfaces: []
+  consumes_interfaces: []
+  produces_representations: []
+  consumes_representations: []
+
+  boundaries:
+    owns: [DeepSeek Harness plugin runtime, harness application composition, native and Python integration, harness benchmark infrastructure]
+    not_here: [canonical Zer0 architecture authority, z0intelligence decision policy, Tokenomics measurement semantics, AODL ontology]
+
+  evidence:
+    docs: [README.md, docs/architecture.md, docs/development.md, SAFETY.md]
+    tests: [packages/, benchmarks/, snapshots/]
+    schemas: []
