@@ -11,6 +11,27 @@ architecture:
       kind: execution
       summary: Provides the everything-is-a-plugin runtime and composable package graph used to assemble agent behavior.
       paths: [packages/, docs/architecture.md]
+    - id: durable-agent-inbox
+      name: Durable agent inbox and step-boundary injection
+      kind: context
+      summary: Persists next-turn and next-step input as session-log inbox splices. followup() queues and wakes a new turn, steer() queues and wakes the nearest step, while inject() queues model-facing next-step context without waking the driver.
+      paths:
+        - packages/core/agent-loop/src/agent.ts
+        - packages/core/agent-loop/src/inbox.ts
+        - packages/core/agent/src/types.ts
+        - packages/core/agent/src/runtime-types.ts
+      depends_on: [plugin-runtime]
+
+    - id: pre-step-admission
+      name: Pre-step model-visible admission seam
+      kind: integration
+      summary: Claims durable inbox input, assembles system/runtime context, then runs the agent/pre-step waterfall before committing model-visible messages; plugins can reject or replace the admitted batch without mutating the session out of band.
+      paths:
+        - packages/core/agent-loop/src/agent.ts
+        - packages/core/agent/src/dispatch.ts
+        - packages/core/agent/src/runtime-types.ts
+      depends_on: [durable-agent-inbox, plugin-runtime]
+
     - id: applications
       name: Harness applications
       kind: presentation
@@ -42,7 +63,7 @@ architecture:
   consumes_representations: []
 
   boundaries:
-    owns: [DeepSeek Harness plugin runtime, harness application composition, native and Python integration, harness benchmark infrastructure]
+    owns: [DeepSeek Harness plugin runtime, durable agent inbox semantics, step-boundary model-visible admission, harness application composition, native and Python integration, harness benchmark infrastructure]
     not_here: [canonical Zer0 architecture authority, z0intelligence decision policy, Tokenomics measurement semantics, AODL ontology]
 
   evidence:
