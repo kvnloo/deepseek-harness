@@ -1,0 +1,22 @@
+# Opt-in native DSH -> z0intelligence -> ctx memory path.
+#
+# Prerequisites:
+# - z0intelligence PR #121 branch with `z0int context resolve --allow-ctx`
+# - ctx indexed manually; z0 reads it with --refresh off
+#
+# This is intentionally not part of the base bundle. AgentsView remains a
+# control/fallback while the z0evals memory cohorts are still being dogfooded.
+- insert:
+    - id: z0-memory-context
+      name: ./z0-memory-context.mjs
+      inject: [agents, subprocess]
+      config:
+        mode: inject
+        projectRoot: !!js process.cwd()
+        allowQmd: false
+        includeCurrentSession: true
+        hydrateTop: 3
+        hydrateChars: 2000
+        maxEvidence: 6
+        maxChars: 6000
+        timeoutMs: 4000
