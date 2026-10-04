@@ -15,7 +15,7 @@ import z from '@deepseek-ai/schemastery'
 import type { Agent, PreStepDecision } from '@deepseek-ai/dsh-agent'
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
 import type { ContextFormed } from '@deepseek-ai/dsh-llm'
-import type {} from '@deepseek-ai/dsh-subprocess'
+import type { SubprocessHandle } from '@deepseek-ai/dsh-subprocess'
 
 declare module '@deepseek-ai/dsh-llm' {
   interface MessageSourceMap {
@@ -271,7 +271,7 @@ async function resolveWithZ0(
   if (config.includeCurrentSession) argv.push('--ctx-include-current-session')
   if (!config.allowQmd) argv.push('--no-qmd')
 
-  let handle
+  let handle: SubprocessHandle
   try {
     handle = ctx.subprocess.spawn({
       argv,
