@@ -124,6 +124,7 @@
     "@deepseek-ai/dsh-terminal": "workspace:*",
     "@deepseek-ai/dsh-terminal-bash": "workspace:*",
     "@deepseek-ai/dsh-time-context": "workspace:*",
+    "@deepseek-ai/dsh-z0-memory-context": "workspace:*",
     "@deepseek-ai/dsh-timeout": "workspace:*",
     "@deepseek-ai/dsh-token-meter": "workspace:*",
     "@deepseek-ai/dsh-tool-ask-user": "workspace:*",
