@@ -40,6 +40,7 @@ const PACKET = {
 
 class FakeSubprocess extends SubprocessRuntime {
   readonly calls: SubprocessSpawnSpec[] = []
+  payload: unknown = PACKET
 
   override async resolveExecutable(command: string): Promise<string> {
     return `/usr/bin/${command}`
@@ -51,7 +52,7 @@ class FakeSubprocess extends SubprocessRuntime {
 
   override spawn(spec: SubprocessSpawnSpec): SubprocessHandle {
     this.calls.push(spec)
-    const stdout = JSON.stringify(PACKET)
+    const stdout = JSON.stringify(this.payload)
     return {
       stdin: undefined,
       stdout: undefined,
@@ -93,7 +94,7 @@ class ScriptedAdapter extends LlmAdapter {
   }
 }
 
-async function harness(config: Config): Promise<{
+async function harness(config: Config, payload: unknown = PACKET): Promise<{
   ctx: Context
   subprocess: FakeSubprocess
   adapter: ScriptedAdapter
@@ -101,11 +102,13 @@ async function harness(config: Config): Promise<{
   const ctx = new Context()
   await mountAgentLoopTestDependencies(ctx)
   await ctx.plugin(FakeSubprocess)
+  const subprocess = ctx.subprocess as FakeSubprocess
+  subprocess.payload = payload
   await ctx.plugin(AgentLoop, { agents: [] })
   await ctx.plugin(z0MemoryContext, config)
   const adapter = new ScriptedAdapter()
   ctx.llm.registerAdapter(['mock'], adapter)
-  return { ctx, subprocess: ctx.subprocess as FakeSubprocess, adapter }
+  return { ctx, subprocess, adapter }
 }
 
 function requestText(request: GenerateOptions): string {
@@ -159,10 +162,48 @@ describe('z0-memory-context', () => {
       requestSignature: 'request-123',
       sourceEpochs: { ctx_generation: 'gen-7', policy: 'v0' },
       evidenceLocators: ['ctx:event:evt-1'],
+      unresolvedGapCount: 0,
+      contradictionCount: 0,
       retrievalLatencyMs: 200,
     })
     expect(event.data.source.injectionHash).toBe(createHash('sha256').update(text).digest('hex'))
     expect(event.surfaceOp).toBe('append')
+    await ctx.fiber.dispose()
+  })
+
+  it('injects unresolved retrieval gaps so the model can abstain instead of inventing memory', async () => {
+    const missing = {
+      ...PACKET,
+      evidence: [],
+      unresolved_gaps: ["q0: no lexical hits for 'missing decision' (qmd=absent, ctx=ready)"],
+      contradictions: ['ctx generation changed during resolve: gen-7 -> gen-8'],
+    }
+    const { ctx, adapter } = await harness({ mode: 'inject' }, missing)
+    const agent = await ctx.agentLoop.create(SessionId('missing'), { provider: 'mock', model: 'mock' })
+
+    agent.followup(createUserMessage({
+      content: [{ type: 'text', text: 'what was the missing decision?' }],
+      source: { kind: 'user' },
+    }))
+    await agent.whenIdle()
+
+    const visible = requestText(adapter.requests[0]!)
+    expect(visible).toContain('Resolver contradictions')
+    expect(visible).toContain('Unresolved retrieval gaps')
+    expect(visible).toContain('abstain rather than inventing a fact')
+    expect(visible).not.toContain('<evidence')
+
+    const event = agent.session.snapshotEvents().find(
+      candidate => candidate.type === 'user/message' && candidate.data.source.kind === 'z0-memory-context',
+    )
+    if (event?.type !== 'user/message' || event.data.source.kind !== 'z0-memory-context') {
+      throw new Error('missing z0 memory context')
+    }
+    expect(event.data.source).toMatchObject({
+      evidenceLocators: [],
+      unresolvedGapCount: 1,
+      contradictionCount: 1,
+    })
     await ctx.fiber.dispose()
   })
 
