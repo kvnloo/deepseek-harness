@@ -13,6 +13,6 @@ The bridge is deliberately narrow:
 - retrieved memory is rendered as untrusted data, never instruction/authority.
 - exact model-visible text is SHA-256 stamped in the message source metadata.
 
-The local `z0int` executable and ctx index are external prerequisites.
+The local `z0int` executable from the canonical `kvnloo/z0intelligence#121` branch and a ctx index are external prerequisites.
 Use the example patch at
 `apps/cli/config/examples/z0-memory-context.cordis.yml`.
