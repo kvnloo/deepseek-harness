@@ -12,7 +12,7 @@
 import { createHash } from 'node:crypto'
 import type { Context } from '@deepseek-ai/cordis'
 import z from '@deepseek-ai/schemastery'
-import type { PreStepDecision } from '@deepseek-ai/dsh-agent'
+import type { Agent, PreStepDecision } from '@deepseek-ai/dsh-agent'
 import { createUserMessage } from '@deepseek-ai/dsh-llm'
 import type { ContextFormed } from '@deepseek-ai/dsh-llm'
 import type {} from '@deepseek-ai/dsh-subprocess'
@@ -39,7 +39,7 @@ export type Mode = 'off' | 'shadow' | 'inject'
 
 export interface Config {
   /** off is the safe default; shadow retrieves without changing requests. */
-  mode?: Mode
+  mode?: string
   /** z0int executable name or absolute path. */
   command?: string
   /** Repository/project scope passed to z0; defaults to process.cwd(). */
@@ -230,7 +230,7 @@ function render(packet: ResolvedPacket, config: ResolvedConfig): {
   return locators.length === 0 ? undefined : { text, locators }
 }
 
-function alreadyInjected(agent: { session: { snapshotEvents(): readonly any[] } }, turn: number): boolean {
+function alreadyInjected(agent: Agent, turn: number): boolean {
   return agent.session.snapshotEvents().some(event =>
     event.type === 'user/message'
       && event.data?.source?.kind === name
