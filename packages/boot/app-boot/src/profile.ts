@@ -186,6 +186,9 @@ export const PROFILE_TEMPLATES: Record<string, ProfileTemplate> = {
   headless: {
     bundles: ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-headless'],
   },
+  tui: {
+    bundles: ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-tui-app'],
+  },
   sdk: {
     bundles: ['@deepseek-ai/dsh-base', '@deepseek-ai/dsh-sdk-app'],
   },
