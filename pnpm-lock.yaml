@@ -15,7 +15,7 @@ patchedDependencies:
   '@fortune-sheet/core@1.0.4': 8791a230763dbf853fd65d627c68c31de37209992851377855e16cf08ea70532
   '@fortune-sheet/react@1.0.4': 2932e52e79afcd4ced08cfa123b5eded786c85043da32f622f3e80af6fc96c37
   '@yao-pkg/pkg@6.21.0': 75891fc22b277c145cafeab83e41baf4a70f5b8fe6dc0801c6a0b922d7ee88c7
-  '@stencil-hq/tern@0.1.0': 73fa5f42556ee7355329e512ef60432ff17cf6f1469e52a575c5c03d07116ec4
+  '@stencil-hq/tern@0.1.0': 34578d89c1a0d7d626fe4fd8b35bd101c35f5a0662ba5d5b8ec90b91860d7ccd
   exceljs@4.4.0: c1bf8ac8f319dab382f08e3a669b715e691d46c703ac5a4163eb383fbedd1d48
   node-pty@1.2.0-beta.15: b40ae545608897914bd25fb009c97eeac478c34e8a910298ddcb01b746534bb0
 
@@ -2423,7 +2423,7 @@ importers:
         version: link:../../../vendor/schemastery
       '@stencil-hq/tern':
         specifier: 0.1.0
-        version: 0.1.0(patch_hash=73fa5f42556ee7355329e512ef60432ff17cf6f1469e52a575c5c03d07116ec4)
+        version: 0.1.0(patch_hash=34578d89c1a0d7d626fe4fd8b35bd101c35f5a0662ba5d5b8ec90b91860d7ccd)
       'commander':
         specifier: ^15.0.0
         version: 15.0.0
@@ -24571,7 +24571,7 @@ snapshots:
 
   '@standard-schema/spec@1.1.0': {}
 
-  '@stencil-hq/tern@0.1.0(patch_hash=73fa5f42556ee7355329e512ef60432ff17cf6f1469e52a575c5c03d07116ec4)': {}
+  '@stencil-hq/tern@0.1.0(patch_hash=34578d89c1a0d7d626fe4fd8b35bd101c35f5a0662ba5d5b8ec90b91860d7ccd)': {}
 
   '@stylistic/eslint-plugin@5.10.0(eslint@10.5.0(jiti@2.7.0))':
     dependencies:
